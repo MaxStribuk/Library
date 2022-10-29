@@ -13,29 +13,6 @@ import java.sql.Date;
 public class LiteratureRepositoryImpl implements LiteratureRepository {
 
     @Override
-    public void create(Literature literature) throws SQLException {
-        try (Connection connection = ConnectionManager.open()) {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO LITERATURE " +
-                            "(TYPE, AUTHOR, TITLE, PUBLISHING_HOUSE, " +
-                            "DATE_OF_PUBLICATION, NUMBER_OF_PAGES) " +
-                            "VALUES (?, ?, ?, ?, ?, ?)");
-            setPreparedStatementParameters(literature, stmt);
-            stmt.execute();
-        }
-    }
-
-    @Override
-    public void print() throws SQLException {
-        try (Connection connection = ConnectionManager.open()) {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM literature");
-            ResultSet literatures = stmt.executeQuery();
-            print(literatures);
-        }
-    }
-
-    @Override
     public void initializeTable() throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(
@@ -53,6 +30,16 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
     }
 
     @Override
+    public void print() throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM literature");
+            ResultSet literatures = stmt.executeQuery();
+            print(literatures);
+        }
+    }
+
+    @Override
     public boolean check(Literature literature) throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(
@@ -66,6 +53,40 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
             );
             setPreparedStatementParameters(literature, stmt);
             return stmt.executeQuery().first();
+        }
+    }
+
+    @Override
+    public boolean check(int id) throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM LITERATURE WHERE ID = ?"
+            );
+            stmt.setInt(1, id);
+            return stmt.executeQuery().first();
+        }
+    }
+
+    @Override
+    public void remove(int id) throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "DELETE FROM LITERATURE WHERE ID = ?");
+            stmt.setInt(1, id);
+            stmt.execute();
+        }
+    }
+
+    @Override
+    public void create(Literature literature) throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "INSERT INTO LITERATURE " +
+                            "(TYPE, AUTHOR, TITLE, PUBLISHING_HOUSE, " +
+                            "DATE_OF_PUBLICATION, NUMBER_OF_PAGES) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)");
+            setPreparedStatementParameters(literature, stmt);
+            stmt.execute();
         }
     }
 

@@ -14,5 +14,10 @@ public interface LiteratureService {
 
     boolean checkLiterature(Literature literature) throws SQLException;
 
+    boolean checkLiterature(int id) throws SQLException;
     void addLiterature(Literature literature) throws SQLException;
+
+    String inputData(String column, boolean isReturnString);
+
+    void removeLiterature(int id) throws SQLException;
 }

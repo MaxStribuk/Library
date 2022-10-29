@@ -39,12 +39,15 @@ public final class Constants {
             "или введите 0 для возврата в главное меню";
     public static final String CREATING_PUBLISHING_HOUSE = "Пожалуйста, задайте издательство " +
             "или введите 0 для возврата в главное меню";
-    public static final String INVALID_INPUT_LITERATURE = "Поле не может быть пустым";
     public static final String CREATING_DATE_OF_PUBLICATION = "Пожалуйста, задайте " +
             "дату издания в формате yyyy mm dd или введите 0 для возврата в главное меню";
     public static final String CREATING_NUMBER_OF_PAGES = "Пожалуйста, задайте " +
-            "количество страниц (положительное целое число) " +
-            "или введите 0 для возврата в главное меню";
+            "количество страниц или введите 0 для возврата в главное меню";
+    public static final String SUCCESSFUL_OPERATION = "Операция завершена успешно";
+    public static final String FAILED_REMOVE_LITERATURE = "Удалить литературу из базы данных не удалось. " +
+            "Проверьте корректность ID.";
+    public static final String INPUT_ID = "Пожалуйста, введите ID литературы. Если Вам не известен ID, " +
+            "Вы можете восспользоваться нашим каталогом";
 
     private Constants() {
     }

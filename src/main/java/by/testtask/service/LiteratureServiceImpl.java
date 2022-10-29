@@ -16,24 +16,25 @@ public class LiteratureServiceImpl implements LiteratureService {
     LiteratureRepository literatureRepository = new LiteratureRepositoryImpl();
 
     @Override
-    public void showLiterature() throws SQLException {
-        literatureRepository.print();
+    public void initializeTable() throws SQLException {
+        literatureRepository.initializeTable();
     }
 
     @Override
-    public void initializeTable() throws SQLException {
-        literatureRepository.initializeTable();
+    public void showLiterature() throws SQLException {
+        literatureRepository.print();
     }
 
     @Override
     public Literature inputLiterature() throws InputMismatchException {
         return Literature.builder()
                 .type(inputType())
-                .author(inputData("author"))
-                .title(inputData("title"))
-                .publishingHouse(inputData("publishingHouse"))
+                .author(inputData("author", true))
+                .title(inputData("title", true))
+                .publishingHouse(inputData("publishingHouse", true))
                 .dateOfPublication(inputDateOfPublication())
-                .numberOfPages(inputNumberOfPages())
+                .numberOfPages(Integer.parseInt(
+                        inputData("numberOfPages", false)))
                 .build();
     }
 
@@ -43,21 +44,30 @@ public class LiteratureServiceImpl implements LiteratureService {
     }
 
     @Override
+    public boolean checkLiterature(int id) throws SQLException {
+        return literatureRepository.check(id);
+    }
+
+    @Override
     public void addLiterature(Literature literature) throws SQLException {
         literatureRepository.create(literature);
     }
 
-    private int inputNumberOfPages() throws InputMismatchException {
-        int numberOfPages;
+    private String inputType() throws InputMismatchException {
+        String type;
         while (true) {
-            System.out.println(Constants.CREATING_NUMBER_OF_PAGES);
-            numberOfPages = Integer.parseInt(Constants.INPUT.nextLine());
-            if (numberOfPages == 0) {
-                throw new InputMismatchException();
-            }
-            if (numberOfPages > 0) {
-                return numberOfPages;
-            } else {
+            try {
+                System.out.println(Constants.CREATING_TYPE);
+                type = Constants.INPUT.nextLine();
+                return switch (type) {
+                    case "0" -> throw new InputMismatchException();
+                    case "1" -> Types.BOOK.toString();
+                    case "2" -> Types.JOURNAL.toString();
+                    case "3" -> Types.NEWSPAPER.toString();
+                    case "4" -> Types.OTHER.toString();
+                    default -> throw new NumberFormatException();
+                };
+            } catch (NumberFormatException e) {
                 System.out.println(Constants.INVALID_INPUT);
             }
         }
@@ -82,39 +92,18 @@ public class LiteratureServiceImpl implements LiteratureService {
                 } else {
                     throw new DateTimeException("");
                 }
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException | DateTimeException e) {
+            } catch (NumberFormatException
+                     | ArrayIndexOutOfBoundsException
+                     | DateTimeException e) {
                 System.out.println(Constants.INVALID_INPUT);
             }
         }
     }
 
-    private String inputType() throws InputMismatchException {
-        String type;
-        while (true) {
-            try {
-                System.out.println(Constants.CREATING_TYPE);
-                type = Constants.INPUT.nextLine();
-                return switch (type) {
-                    case "0" -> throw new InputMismatchException();
-                    case "1" -> Types.BOOK.toString();
-                    case "2" -> Types.JOURNAL.toString();
-                    case "3" -> Types.NEWSPAPER.toString();
-                    case "4" -> Types.OTHER.toString();
-                    default -> throw new NumberFormatException();
-                };
-            } catch (NumberFormatException e) {
-                System.out.println(Constants.INVALID_INPUT);
-            }
-        }
-    }
-
-    private String inputData(String data) throws InputMismatchException {
-        String message = switch (data) {
-            case "author" -> Constants.CREATING_AUTHOR;
-            case "title" -> Constants.CREATING_TITLE;
-            case "publishingHouse" -> Constants.CREATING_PUBLISHING_HOUSE;
-            default -> throw new InputMismatchException();
-        };
+    @Override
+    public String inputData(String column, boolean isReturnString)
+            throws InputMismatchException {
+        String message = selectMessage(column);
         String input;
         while (true) {
             System.out.println(message);
@@ -122,11 +111,38 @@ public class LiteratureServiceImpl implements LiteratureService {
             if (input.equals("0")) {
                 throw new InputMismatchException();
             }
-            if (input.length() > 0) {
+            boolean isCorrectInput = checkCorrectInput(input, isReturnString);
+            if (isCorrectInput) {
                 return input;
             } else {
-                System.out.println(Constants.INVALID_INPUT_LITERATURE);
+                System.out.println(Constants.INVALID_INPUT);
             }
+        }
+    }
+
+    @Override
+    public void removeLiterature(int id) throws SQLException {
+        literatureRepository.remove(id);
+    }
+
+    private String selectMessage (String column) throws InputMismatchException {
+        return switch (column) {
+            case "author" -> Constants.CREATING_AUTHOR;
+            case "title" -> Constants.CREATING_TITLE;
+            case "publishingHouse" -> Constants.CREATING_PUBLISHING_HOUSE;
+            case "numberOfPages" -> Constants.CREATING_NUMBER_OF_PAGES;
+            case "ID" -> Constants.INPUT_ID;
+            default -> throw new InputMismatchException();
+        };
+    }
+
+    private boolean checkCorrectInput(String input, boolean isReturnString) {
+        try {
+            return isReturnString
+                    ? input.length() > 0
+                    : Integer.parseInt(input) > 0;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }

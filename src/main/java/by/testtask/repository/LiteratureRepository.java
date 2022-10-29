@@ -13,4 +13,8 @@ public interface LiteratureRepository {
     void initializeTable() throws SQLException;
 
     boolean check(Literature literature) throws SQLException;
+
+    boolean check(int id) throws SQLException;
+
+    void remove(int id) throws SQLException;
 }

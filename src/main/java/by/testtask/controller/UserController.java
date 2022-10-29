@@ -11,8 +11,6 @@ import java.util.InputMismatchException;
 public class UserController {
 
     private final LiteratureService literatureService = new LiteratureServiceImpl();
-//            1 - для просмотра каталога
-//            2 - для добавления в каталог новой литературы
 //            3 - для удаления литературы из каталога
 //            4 - для внесения изменений в литературу из каталога
 //            5 - для создания выборки из каталога
@@ -30,12 +28,27 @@ public class UserController {
         boolean isNotBusyLiterature = !literatureService.checkLiterature(literature);
         if (isNotBusyLiterature) {
             literatureService.addLiterature(literature);
+            System.out.println(Constants.SUCCESSFUL_OPERATION);
         } else {
             System.out.println(Constants.FAILED_CREATE_LITERATURE);
         }
     }
 
-    public void removeLiterature() {
+    public void removeLiterature() throws SQLException {
+        int id;
+        try {
+            id = Integer.parseInt(
+                    literatureService.inputData("ID", false));
+        } catch (InputMismatchException e) {
+            return;
+        }
+        boolean isValidID = literatureService.checkLiterature(id);
+        if (isValidID) {
+            literatureService.removeLiterature(id);
+            System.out.println(Constants.SUCCESSFUL_OPERATION);
+        } else {
+            System.out.println(Constants.FAILED_REMOVE_LITERATURE);
+        }
     }
 
     public void updateLiterature() {
