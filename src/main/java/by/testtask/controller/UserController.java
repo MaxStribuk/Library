@@ -11,13 +11,6 @@ import java.util.InputMismatchException;
 public class UserController {
 
     private final LiteratureService literatureService = new LiteratureServiceImpl();
-//            3 - для удаления литературы из каталога
-//            4 - для внесения изменений в литературу из каталога
-//            5 - для создания выборки из каталога
-    public void showLiterature() throws SQLException {
-        literatureService.showLiterature();
-    }
-
     public void addLiterature() throws SQLException {
         Literature literature;
         try {
@@ -54,7 +47,18 @@ public class UserController {
     public void updateLiterature() {
     }
 
-    public void searchLiterature() {
+    public void showLiterature() throws SQLException {
+        literatureService.showLiterature();
+    }
+
+    public void searchLiterature() throws SQLException {
+        String searchWord;
+        try {
+            searchWord = literatureService.inputData("search", true);
+        } catch (InputMismatchException e) {
+            return;
+        }
+        literatureService.showLiterature(searchWord);
     }
 
     public void initializeTable() {

@@ -40,6 +40,24 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
     }
 
     @Override
+    public void print(String searchWord) throws SQLException {
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * " +
+                            "FROM literature " +
+                            "WHERE TYPE LIKE ? " +
+                            "OR AUTHOR LIKE ? " +
+                            "OR TITLE LIKE ? " +
+                            "OR PUBLISHING_HOUSE LIKE ?");
+            for (int i = 1; i <= 4; i++) {
+                stmt.setString(i,"%" + searchWord + "%");
+            }
+            ResultSet literatures = stmt.executeQuery();
+            print(literatures);
+        }
+    }
+
+    @Override
     public boolean check(Literature literature) throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(

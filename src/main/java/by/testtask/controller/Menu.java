@@ -16,7 +16,7 @@ public class Menu {
 
     private void printMenu() {
         while (true) {
-            System.out.println(Constants.MENU_MAIN);
+            System.out.print(Constants.MENU_MAIN);
             String input = Constants.INPUT.nextLine();
             try {
                 switch (input) {

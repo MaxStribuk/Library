@@ -2,10 +2,10 @@ package by.testtask.model;
 
 public enum Types {
 
-    BOOK ("Книга"),
-    JOURNAL ("Журнал"),
-    NEWSPAPER ("Газета"),
-    OTHER ("Другое");
+    BOOK ("book"),
+    JOURNAL ("journal"),
+    NEWSPAPER ("newspaper"),
+    OTHER ("other");
 
     private final String type;
 

@@ -7,11 +7,11 @@ public final class Constants {
     public static final Scanner INPUT = new Scanner(System.in);
     public static final String GREETING = "Добро пожаловать в приложение Моя библиотека!!!";
     public static final String FAREWELL = "Спасибо, что воспользовались приложением, до свидания!!!";
-    public static final String FAILED_LOAD_DRIVER = "Не удалось загрузить jdbc драйвер.";
+    public static final String FAILED_LOAD_DRIVER = "Не удалось загрузить jdbc драйвер";
     public static final String FAILED_CONNECTION_DATABASE = "Не удалось установить " +
-            "соединение с базой данных.";
-    public static final String FAILED_READ_FILE = "Не удалось прочитать файл application.properties.";
-    public static final String FAILED_CREATE_LITERATURE = "Добавить литературу в базу данных не удалось. " +
+            "соединение с базой данных";
+    public static final String FAILED_READ_FILE = "Не удалось прочитать файл application.properties";
+    public static final String FAILED_CREATE_LITERATURE = "Добавить литературу в базу данных не удалось.\n" +
             "Возможно она уже находится в базе данных.";
     public static final String MENU_MAIN = """
             Пожалуйста, введите:
@@ -19,7 +19,7 @@ public final class Constants {
             2 - для добавления в каталог новой литературы
             3 - для удаления литературы из каталога
             4 - для внесения изменений в литературу из каталога
-            5 - для создания выборки из каталога
+            5 - для поиска по каталогу
             0 - для выхода из приложения
             """;
     public static final String INVALID_INPUT = "Некорректный ввод.";
@@ -33,21 +33,42 @@ public final class Constants {
             4 - чтобы установить тип литературы - другое
             0 - для возврата в главное меню
             """;
-    public static final String CREATING_AUTHOR = "Пожалуйста, задайте автора(ов) " +
-            "или введите 0 для возврата в главное меню";
-    public static final String CREATING_TITLE = "Пожалуйста, задайте название " +
-            "или введите 0 для возврата в главное меню";
-    public static final String CREATING_PUBLISHING_HOUSE = "Пожалуйста, задайте издательство " +
-            "или введите 0 для возврата в главное меню";
-    public static final String CREATING_DATE_OF_PUBLICATION = "Пожалуйста, задайте " +
-            "дату издания в формате yyyy mm dd или введите 0 для возврата в главное меню";
-    public static final String CREATING_NUMBER_OF_PAGES = "Пожалуйста, задайте " +
-            "количество страниц или введите 0 для возврата в главное меню";
+    public static final String CREATING_AUTHOR = """
+            Пожалуйста, задайте автора(ов)
+            или введите 0 для возврата в главное меню.
+            Каталог библиотеки ведется на английском языке
+            """;
+    public static final String CREATING_TITLE = """
+            Пожалуйста, задайте название
+            или введите 0 для возврата в главное меню.
+            Каталог библиотеки ведется на английском языке
+            """;
+    public static final String CREATING_PUBLISHING_HOUSE = """
+            Пожалуйста, задайте издательство
+            или введите 0 для возврата в главное меню.
+            Каталог библиотеки ведется на английском языке
+            """;
+    public static final String CREATING_DATE_OF_PUBLICATION = """
+            Пожалуйста, задайте дату издания в формате yyyy mm dd
+            или введите 0 для возврата в главное меню
+            Каталог библиотеки ведется на английском языке
+            """;
+    public static final String CREATING_NUMBER_OF_PAGES = """
+            Пожалуйста, задайте количество страниц
+            или введите 0 для возврата в главное меню
+            """;
     public static final String SUCCESSFUL_OPERATION = "Операция завершена успешно";
-    public static final String FAILED_REMOVE_LITERATURE = "Удалить литературу из базы данных не удалось. " +
+    public static final String FAILED_REMOVE_LITERATURE = "Удалить литературу из базы данных не удалось.\n" +
             "Проверьте корректность ID.";
-    public static final String INPUT_ID = "Пожалуйста, введите ID литературы. Если Вам не известен ID, " +
-            "Вы можете восспользоваться нашим каталогом";
+    public static final String INPUT_ID = """
+            Пожалуйста, введите ID литературы или введите 0 для возврата в главное меню.
+            Если Вам не известен ID, Вы можете восспользоваться нашим каталогом
+            """;
+    public static final String INPUT_REQUEST = """
+            Пожалуйста, введите запрос для поиска
+            или введите 0 для возврата в главное меню.
+            Каталог библиотеки ведется на английском языке
+            """;
 
     private Constants() {
     }

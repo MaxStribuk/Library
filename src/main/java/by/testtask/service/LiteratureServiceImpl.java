@@ -26,6 +26,11 @@ public class LiteratureServiceImpl implements LiteratureService {
     }
 
     @Override
+    public void showLiterature(String searchWord) throws SQLException {
+        literatureRepository.print(searchWord);
+    }
+
+    @Override
     public Literature inputLiterature() throws InputMismatchException {
         return Literature.builder()
                 .type(inputType())
@@ -57,7 +62,7 @@ public class LiteratureServiceImpl implements LiteratureService {
         String type;
         while (true) {
             try {
-                System.out.println(Constants.CREATING_TYPE);
+                System.out.print(Constants.CREATING_TYPE);
                 type = Constants.INPUT.nextLine();
                 return switch (type) {
                     case "0" -> throw new InputMismatchException();
@@ -77,7 +82,7 @@ public class LiteratureServiceImpl implements LiteratureService {
         String input;
         while (true) {
             try {
-                System.out.println(Constants.CREATING_DATE_OF_PUBLICATION);
+                System.out.print(Constants.CREATING_DATE_OF_PUBLICATION);
                 input = Constants.INPUT.nextLine();
                 if (input.equals("0")) {
                     throw new InputMismatchException();
@@ -106,14 +111,14 @@ public class LiteratureServiceImpl implements LiteratureService {
         String message = selectMessage(column);
         String input;
         while (true) {
-            System.out.println(message);
+            System.out.print(message);
             input = Constants.INPUT.nextLine().trim();
             if (input.equals("0")) {
                 throw new InputMismatchException();
             }
             boolean isCorrectInput = checkCorrectInput(input, isReturnString);
             if (isCorrectInput) {
-                return input;
+                return input.toLowerCase();
             } else {
                 System.out.println(Constants.INVALID_INPUT);
             }
@@ -132,6 +137,7 @@ public class LiteratureServiceImpl implements LiteratureService {
             case "publishingHouse" -> Constants.CREATING_PUBLISHING_HOUSE;
             case "numberOfPages" -> Constants.CREATING_NUMBER_OF_PAGES;
             case "ID" -> Constants.INPUT_ID;
+            case "search" -> Constants.INPUT_REQUEST;
             default -> throw new InputMismatchException();
         };
     }
@@ -140,6 +146,8 @@ public class LiteratureServiceImpl implements LiteratureService {
         try {
             return isReturnString
                     ? input.length() > 0
+                        && input.matches("[a-zA-Z0-9 .,-:\"]+")
+                        && input.matches(".*[a-zA-Z]+.*")
                     : Integer.parseInt(input) > 0;
         } catch (NumberFormatException e) {
             return false;

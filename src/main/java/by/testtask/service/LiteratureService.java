@@ -8,6 +8,8 @@ public interface LiteratureService {
 
     void showLiterature() throws SQLException;
 
+    void showLiterature(String searchWord) throws SQLException;
+
     void initializeTable() throws SQLException;
 
     Literature inputLiterature();

@@ -10,6 +10,8 @@ public interface LiteratureRepository {
 
     void print() throws SQLException;
 
+    void print(String searchWord) throws SQLException;
+
     void initializeTable() throws SQLException;
 
     boolean check(Literature literature) throws SQLException;
