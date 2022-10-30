@@ -44,6 +44,26 @@ public class LiteratureServiceImpl implements LiteratureService {
     }
 
     @Override
+    public String inputData(String column, boolean isReturnString)
+            throws InputMismatchException {
+        String message = selectMessage(column);
+        String input;
+        while (true) {
+            System.out.print(message);
+            input = Constants.INPUT.nextLine().trim();
+            if (input.equals("0")) {
+                throw new InputMismatchException();
+            }
+            boolean isCorrectInput = checkCorrectInput(input, isReturnString);
+            if (isCorrectInput) {
+                return input.toLowerCase();
+            } else {
+                System.out.println(Constants.INVALID_INPUT);
+            }
+        }
+    }
+
+    @Override
     public boolean checkLiterature(Literature literature) throws SQLException {
         return literatureRepository.check(literature);
     }
@@ -58,11 +78,72 @@ public class LiteratureServiceImpl implements LiteratureService {
         literatureRepository.create(literature);
     }
 
+    @Override
+    public void removeLiterature(int id) {
+        try {
+            literatureRepository.remove(id);
+        } catch (SQLException e) {
+            System.out.println(Constants.FAILED_CONNECTION_DATABASE);
+        }
+    }
+
+    @Override
+    public void updateLiterature(int id) throws InputMismatchException {
+        String input;
+        while (true) {
+            try {
+                System.out.print(Constants.MENU_UPDATE);
+                input = Constants.INPUT.nextLine();
+                switch (input) {
+                    case "0" -> throw new InputMismatchException();
+                    case "1" -> {
+                        String newType = inputType();
+                        literatureRepository.update("type", newType, id);
+                        return;
+                    }
+                    case "2" -> {
+                        String newAuthor = inputData("author", true);
+                        literatureRepository.update("author", newAuthor, id);
+                        return;
+                    }
+                    case "3" -> {
+                        String newTitle = inputData("title", true);
+                        literatureRepository.update("title", newTitle, id);
+                        return;
+                    }
+                    case "4" -> {
+                        String newPublishingHouse = inputData("publishingHouse", true);
+                        literatureRepository.update("publishingHouse", newPublishingHouse, id);
+                        return;
+                    }
+                    case "5" -> {
+                        LocalDate newDateOfPublication = inputDateOfPublication();
+                        literatureRepository.update("dateOfPublication", newDateOfPublication, id);
+                        return;
+                    }
+                    case "6" -> {
+                        Integer newNumberOfPages = Integer.parseInt(
+                                inputData("numberOfPages", false));
+                        literatureRepository.update("numberOfPages", newNumberOfPages, id);
+                        return;
+                    }
+                    default -> throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(Constants.INVALID_INPUT);
+            } catch (IllegalArgumentException e) {
+                System.out.println(Constants.INVALID_OPERATION);
+            } catch (SQLException e) {
+                System.out.println(Constants.FAILED_CONNECTION_DATABASE);
+            }
+        }
+    }
+
     private String inputType() throws InputMismatchException {
         String type;
         while (true) {
             try {
-                System.out.print(Constants.CREATING_TYPE);
+                System.out.print(Constants.INPUT_TYPE);
                 type = Constants.INPUT.nextLine();
                 return switch (type) {
                     case "0" -> throw new InputMismatchException();
@@ -82,7 +163,7 @@ public class LiteratureServiceImpl implements LiteratureService {
         String input;
         while (true) {
             try {
-                System.out.print(Constants.CREATING_DATE_OF_PUBLICATION);
+                System.out.print(Constants.INPUT_DATE_OF_PUBLICATION);
                 input = Constants.INPUT.nextLine();
                 if (input.equals("0")) {
                     throw new InputMismatchException();
@@ -105,37 +186,12 @@ public class LiteratureServiceImpl implements LiteratureService {
         }
     }
 
-    @Override
-    public String inputData(String column, boolean isReturnString)
-            throws InputMismatchException {
-        String message = selectMessage(column);
-        String input;
-        while (true) {
-            System.out.print(message);
-            input = Constants.INPUT.nextLine().trim();
-            if (input.equals("0")) {
-                throw new InputMismatchException();
-            }
-            boolean isCorrectInput = checkCorrectInput(input, isReturnString);
-            if (isCorrectInput) {
-                return input.toLowerCase();
-            } else {
-                System.out.println(Constants.INVALID_INPUT);
-            }
-        }
-    }
-
-    @Override
-    public void removeLiterature(int id) throws SQLException {
-        literatureRepository.remove(id);
-    }
-
-    private String selectMessage (String column) throws InputMismatchException {
+    private String selectMessage(String column) throws InputMismatchException {
         return switch (column) {
-            case "author" -> Constants.CREATING_AUTHOR;
-            case "title" -> Constants.CREATING_TITLE;
-            case "publishingHouse" -> Constants.CREATING_PUBLISHING_HOUSE;
-            case "numberOfPages" -> Constants.CREATING_NUMBER_OF_PAGES;
+            case "author" -> Constants.INPUT_AUTHOR;
+            case "title" -> Constants.INPUT_TITLE;
+            case "publishingHouse" -> Constants.INPUT_PUBLISHING_HOUSE;
+            case "numberOfPages" -> Constants.INPUT_NUMBER_OF_PAGES;
             case "ID" -> Constants.INPUT_ID;
             case "search" -> Constants.INPUT_REQUEST;
             default -> throw new InputMismatchException();
@@ -146,8 +202,8 @@ public class LiteratureServiceImpl implements LiteratureService {
         try {
             return isReturnString
                     ? input.length() > 0
-                        && input.matches("[a-zA-Z0-9 .,-:\"]+")
-                        && input.matches(".*[a-zA-Z]+.*")
+                    && input.matches("[a-zA-Z0-9 .,-:\"]+")
+                    && input.matches(".*[a-zA-Z]+.*")
                     : Integer.parseInt(input) > 0;
         } catch (NumberFormatException e) {
             return false;

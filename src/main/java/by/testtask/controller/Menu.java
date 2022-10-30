@@ -15,15 +15,16 @@ public class Menu {
     }
 
     private void printMenu() {
+        String input;
         while (true) {
             System.out.print(Constants.MENU_MAIN);
-            String input = Constants.INPUT.nextLine();
+            input = Constants.INPUT.nextLine();
             try {
                 switch (input) {
                     case "1" -> userController.showLiterature();
                     case "2" -> userController.addLiterature();
-                    case "3" -> userController.removeLiterature();
-                    case "4" -> userController.updateLiterature();
+                    case "3" -> userController.updateLiterature("remove");
+                    case "4" -> userController.updateLiterature("update");
                     case "5" -> userController.searchLiterature();
                     case "0" -> {
                         System.out.println(Constants.FAREWELL);

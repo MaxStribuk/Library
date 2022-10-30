@@ -7,10 +7,24 @@ import by.testtask.util.Constants;
 
 import java.sql.SQLException;
 import java.util.InputMismatchException;
+import java.util.function.Consumer;
 
 public class UserController {
 
     private final LiteratureService literatureService = new LiteratureServiceImpl();
+
+    public void initializeTable() {
+        try {
+            literatureService.initializeTable();
+        } catch (SQLException e) {
+            throw new RuntimeException(Constants.FAILED_CONNECTION_DATABASE);
+        }
+    }
+
+    public void showLiterature() throws SQLException {
+        literatureService.showLiterature();
+    }
+
     public void addLiterature() throws SQLException {
         Literature literature;
         try {
@@ -27,28 +41,33 @@ public class UserController {
         }
     }
 
-    public void removeLiterature() throws SQLException {
-        int id;
-        try {
-            id = Integer.parseInt(
-                    literatureService.inputData("ID", false));
-        } catch (InputMismatchException e) {
-            return;
-        }
+
+    public void updateLiterature(Consumer<Integer> task, int id) throws SQLException {
         boolean isValidID = literatureService.checkLiterature(id);
         if (isValidID) {
-            literatureService.removeLiterature(id);
+            try {
+                task.accept(id);
+            } catch (InputMismatchException e) {
+                return;
+            }
             System.out.println(Constants.SUCCESSFUL_OPERATION);
         } else {
-            System.out.println(Constants.FAILED_REMOVE_LITERATURE);
+            System.out.println(Constants.FAILED_OPERATION);
         }
     }
 
-    public void updateLiterature() {
-    }
-
-    public void showLiterature() throws SQLException {
-        literatureService.showLiterature();
+    public void updateLiterature(String task) throws SQLException {
+        Integer id = inputID();
+        if (id == null) return;
+        try {
+            switch (task) {
+                case "remove" -> updateLiterature(literatureService::removeLiterature, id);
+                case "update" -> updateLiterature(literatureService::updateLiterature, id);
+                default -> throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(Constants.INVALID_OPERATION);
+        }
     }
 
     public void searchLiterature() throws SQLException {
@@ -61,11 +80,12 @@ public class UserController {
         literatureService.showLiterature(searchWord);
     }
 
-    public void initializeTable() {
+    private Integer inputID() {
         try {
-            literatureService.initializeTable();
-        } catch (SQLException e) {
-            throw new RuntimeException(Constants.FAILED_CONNECTION_DATABASE);
+            String id = literatureService.inputData("ID", false);
+            return Integer.parseInt(id);
+        } catch (InputMismatchException e) {
+            return null;
         }
     }
 }

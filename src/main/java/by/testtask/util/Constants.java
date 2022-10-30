@@ -13,6 +13,8 @@ public final class Constants {
     public static final String FAILED_READ_FILE = "Не удалось прочитать файл application.properties";
     public static final String FAILED_CREATE_LITERATURE = "Добавить литературу в базу данных не удалось.\n" +
             "Возможно она уже находится в базе данных.";
+    public static final String FAILED_OPERATION = "Выполнить операцию не удалось. " +
+            "Проверьте корректность ID";
     public static final String MENU_MAIN = """
             Пожалуйста, введите:
             1 - для просмотра каталога
@@ -22,10 +24,22 @@ public final class Constants {
             5 - для поиска по каталогу
             0 - для выхода из приложения
             """;
+    public static final String MENU_UPDATE = """
+            Пожалуйста, введите номер операции изменения литературы:
+            1 - для изменения типа
+            2 - для изменения автора
+            3 - для изменения названия
+            4 - для изменения издательства
+            5 - для изменения даты публикации
+            6 - для изменения количества страниц
+            0 - для возврата в главное меню
+            """;
     public static final String INVALID_INPUT = "Некорректный ввод.";
+    public static final String INVALID_OPERATION = "Неподдерживаемая операция";
+    public static final String SUCCESSFUL_OPERATION = "Операция завершена успешно";
     public static final String LITERATURE_IS_MISSING = "К сожалению, " +
             "запрошенная Вами литература в каталоге библиотеки отсутствует";
-    public static final String CREATING_TYPE = """
+    public static final String INPUT_TYPE = """
             Пожалуйста, введите:
             1 - чтобы установить тип литературы - книга
             2 - чтобы установить тип литературы - журнал
@@ -33,33 +47,30 @@ public final class Constants {
             4 - чтобы установить тип литературы - другое
             0 - для возврата в главное меню
             """;
-    public static final String CREATING_AUTHOR = """
+    public static final String INPUT_AUTHOR = """
             Пожалуйста, задайте автора(ов)
             или введите 0 для возврата в главное меню.
             Каталог библиотеки ведется на английском языке
             """;
-    public static final String CREATING_TITLE = """
+    public static final String INPUT_TITLE = """
             Пожалуйста, задайте название
             или введите 0 для возврата в главное меню.
             Каталог библиотеки ведется на английском языке
             """;
-    public static final String CREATING_PUBLISHING_HOUSE = """
+    public static final String INPUT_PUBLISHING_HOUSE = """
             Пожалуйста, задайте издательство
             или введите 0 для возврата в главное меню.
             Каталог библиотеки ведется на английском языке
             """;
-    public static final String CREATING_DATE_OF_PUBLICATION = """
+    public static final String INPUT_DATE_OF_PUBLICATION = """
             Пожалуйста, задайте дату издания в формате yyyy mm dd
             или введите 0 для возврата в главное меню
             Каталог библиотеки ведется на английском языке
             """;
-    public static final String CREATING_NUMBER_OF_PAGES = """
+    public static final String INPUT_NUMBER_OF_PAGES = """
             Пожалуйста, задайте количество страниц
             или введите 0 для возврата в главное меню
             """;
-    public static final String SUCCESSFUL_OPERATION = "Операция завершена успешно";
-    public static final String FAILED_REMOVE_LITERATURE = "Удалить литературу из базы данных не удалось.\n" +
-            "Проверьте корректность ID.";
     public static final String INPUT_ID = """
             Пожалуйста, введите ID литературы или введите 0 для возврата в главное меню.
             Если Вам не известен ID, Вы можете восспользоваться нашим каталогом
