@@ -35,10 +35,11 @@ public class UserController {
         boolean isNotBusyLiterature = !literatureService.checkLiterature(literature);
         if (isNotBusyLiterature) {
             literatureService.addLiterature(literature);
-            System.out.println(Constants.SUCCESSFUL_OPERATION);
-        } else {
-            System.out.println(Constants.FAILED_CREATE_LITERATURE);
         }
+        System.out.println(isNotBusyLiterature
+                ? Constants.SUCCESSFUL_OPERATION
+                : Constants.FAILED_ADD_LITERATURE
+        );
     }
 
 
@@ -50,15 +51,18 @@ public class UserController {
             } catch (InputMismatchException e) {
                 return;
             }
-            System.out.println(Constants.SUCCESSFUL_OPERATION);
-        } else {
-            System.out.println(Constants.FAILED_OPERATION);
         }
+        System.out.println(isValidID
+                ? Constants.SUCCESSFUL_OPERATION
+                : Constants.FAILED_OPERATION
+        );
     }
 
     public void updateLiterature(String task) throws SQLException {
         Integer id = inputID();
-        if (id == null) return;
+        if (id == null) {
+            return;
+        }
         try {
             switch (task) {
                 case "remove" -> updateLiterature(literatureService::removeLiterature, id);

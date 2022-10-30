@@ -20,5 +20,6 @@ public interface LiteratureRepository {
 
     void remove(int id) throws SQLException;
 
-    void update(String column, Object newValue, int id) throws SQLException, IllegalArgumentException;
+    void update(String column, Object newValue, int id)
+            throws SQLException, IllegalArgumentException, UnsupportedOperationException;
 }

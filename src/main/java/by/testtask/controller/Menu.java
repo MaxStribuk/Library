@@ -30,7 +30,7 @@ public class Menu {
                         System.out.println(Constants.FAREWELL);
                         return;
                     }
-                    default -> System.out.println(Constants.INVALID_INPUT);
+                    default -> System.out.println(Constants.INVALID_OPERATION);
                 }
             } catch (SQLException e) {
                 System.out.println(Constants.FAILED_CONNECTION_DATABASE);

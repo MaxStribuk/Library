@@ -46,7 +46,7 @@ public class LiteratureServiceImpl implements LiteratureService {
     @Override
     public String inputData(String column, boolean isReturnString)
             throws InputMismatchException {
-        String message = selectMessage(column);
+        String message = selectMessage(column) + Constants.CANCELLATION_OPERATION;
         String input;
         while (true) {
             System.out.print(message);
@@ -127,12 +127,12 @@ public class LiteratureServiceImpl implements LiteratureService {
                         literatureRepository.update("numberOfPages", newNumberOfPages, id);
                         return;
                     }
-                    default -> throw new NumberFormatException();
+                    default -> throw new UnsupportedOperationException();
                 }
-            } catch (NumberFormatException e) {
-                System.out.println(Constants.INVALID_INPUT);
             } catch (IllegalArgumentException e) {
                 System.out.println(Constants.INVALID_OPERATION);
+            } catch (UnsupportedOperationException e) {
+                System.out.println(Constants.FAILED_ADD_LITERATURE);
             } catch (SQLException e) {
                 System.out.println(Constants.FAILED_CONNECTION_DATABASE);
             }
@@ -163,7 +163,7 @@ public class LiteratureServiceImpl implements LiteratureService {
         String input;
         while (true) {
             try {
-                System.out.print(Constants.INPUT_DATE_OF_PUBLICATION);
+                System.out.println(Constants.INPUT_DATE_OF_PUBLICATION);
                 input = Constants.INPUT.nextLine();
                 if (input.equals("0")) {
                     throw new InputMismatchException();

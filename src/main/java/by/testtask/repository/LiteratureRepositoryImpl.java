@@ -18,7 +18,7 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "CREATE TABLE IF NOT EXISTS LITERATURE( " +
-                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "LITERATURE_ID INT PRIMARY KEY AUTO_INCREMENT, " +
                             "TYPE VARCHAR(50) NOT NULL, " +
                             "AUTHOR VARCHAR(255) NOT NULL, " +
                             "TITLE VARCHAR(255) NOT NULL, " +
@@ -49,7 +49,8 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
                             "WHERE TYPE LIKE ? " +
                             "OR AUTHOR LIKE ? " +
                             "OR TITLE LIKE ? " +
-                            "OR PUBLISHING_HOUSE LIKE ?");
+                            "OR PUBLISHING_HOUSE LIKE ?"
+            );
             for (int i = 1; i <= 4; i++) {
                 stmt.setString(i, "%" + searchWord + "%");
             }
@@ -65,7 +66,8 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
                     "INSERT INTO LITERATURE " +
                             "(TYPE, AUTHOR, TITLE, PUBLISHING_HOUSE, " +
                             "DATE_OF_PUBLICATION, NUMBER_OF_PAGES) " +
-                            "VALUES (?, ?, ?, ?, ?, ?)");
+                            "VALUES (?, ?, ?, ?, ?, ?)"
+            );
             setPreparedStatementParameters(literature, stmt);
             stmt.execute();
         }
@@ -92,8 +94,7 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
     public boolean check(int id) throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(
-                    "SELECT * FROM LITERATURE WHERE ID = ?"
-            );
+                    "SELECT * FROM LITERATURE WHERE LITERATURE_ID = ?");
             stmt.setInt(1, id);
             return stmt.executeQuery().first();
         }
@@ -103,7 +104,7 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
     public void remove(int id) throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement stmt = connection.prepareStatement(
-                    "DELETE FROM LITERATURE WHERE ID = ?");
+                    "DELETE FROM LITERATURE WHERE LITERATURE_ID = ?");
             stmt.setInt(1, id);
             stmt.execute();
         }
@@ -111,11 +112,48 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
 
     @Override
     public void update(String column, Object newValue, int id)
-            throws SQLException, IllegalArgumentException {
+            throws SQLException, IllegalArgumentException, UnsupportedOperationException {
+        Literature newLiterature = getLiterature(id);
+        updateLiterature(newLiterature, column, newValue);
+        boolean isValidLiterature = !check(newLiterature);
+        if (isValidLiterature) {
+            try (Connection connection = ConnectionManager.open()) {
+                PreparedStatement stmt = connection.prepareStatement(
+                        "UPDATE LITERATURE " +
+                                "SET TYPE = ?, " +
+                                "AUTHOR = ?, " +
+                                "TITLE = ?, " +
+                                "PUBLISHING_HOUSE = ?, " +
+                                "DATE_OF_PUBLICATION = ?, " +
+                                "NUMBER_OF_PAGES = ? " +
+                                "WHERE LITERATURE_ID = ?"
+                );
+                setPreparedStatementParameters(newLiterature, stmt);
+                stmt.setInt(7, id);
+                stmt.execute();
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    private Literature getLiterature(int id) throws SQLException {
         try (Connection connection = ConnectionManager.open()) {
-            PreparedStatement stmt = selectPreparedStatement(connection,
-                    column, newValue, id);
-            stmt.execute();
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT * FROM LITERATURE WHERE LITERATURE_ID = ?");
+            stmt.setInt(1, id);
+            ResultSet literature = stmt.executeQuery();
+            literature.first();
+            return Literature.builder()
+                    .id(literature.getInt(1))
+                    .type(literature.getString(2))
+                    .author(literature.getString(3))
+                    .title(literature.getString(4))
+                    .publishingHouse(literature.getString(5))
+                    .dateOfPublication(literature.getDate(6).toLocalDate())
+                    .numberOfPages(literature.getInt(7))
+                    .build();
         }
     }
 
@@ -149,44 +187,17 @@ public class LiteratureRepositoryImpl implements LiteratureRepository {
         stmt.setInt(6, literature.getNumberOfPages());
     }
 
-    private PreparedStatement selectPreparedStatement(Connection connection,
-                                                      String column, Object newValue, int id)
-            throws SQLException, IllegalArgumentException {
-        PreparedStatement stmt;
+    private void updateLiterature(Literature literature, String column, Object newValue)
+            throws IllegalArgumentException {
         switch (column) {
-            case "type" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET TYPE = ? WHERE ID = ?");
-                stmt.setString(1, (String) newValue);
-            }
-            case "author" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET AUTHOR = ? WHERE ID = ?");
-                stmt.setString(1, (String) newValue);
-            }
-            case "title" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET TITLE = ? WHERE ID = ?");
-                stmt.setString(1, (String) newValue);
-            }
-            case "publishingHouse" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET PUBLISHING_HOUSE = ? WHERE ID = ?");
-                stmt.setString(1, (String) newValue);
-            }
-            case "dateOfPublication" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET DATE_OF_PUBLICATION = ? WHERE ID = ?");
-                stmt.setDate(1, Date.valueOf((LocalDate) newValue));
-            }
-            case "numberOfPages" -> {
-                stmt = connection.prepareStatement(
-                        "UPDATE LITERATURE SET NUMBER_OF_PAGES = ? WHERE ID = ?");
-                stmt.setInt(1, (Integer) newValue);
-            }
+            case "type" -> literature.setType((String) newValue);
+            case "author" -> literature.setAuthor((String) newValue);
+            case "title" -> literature.setTitle((String) newValue);
+            case "publishingHouse" -> literature.setPublishingHouse((String) newValue);
+            case "dateOfPublication" -> literature.setDateOfPublication(
+                    (LocalDate) newValue);
+            case "numberOfPages" -> literature.setNumberOfPages((Integer) newValue);
             default -> throw new IllegalArgumentException();
         }
-        stmt.setInt(2, id);
-        return stmt;
     }
 }
