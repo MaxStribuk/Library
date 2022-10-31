@@ -53,7 +53,7 @@ public final class Constants {
     public static final String INPUT_PUBLISHING_HOUSE = "Пожалуйста, " +
             "задайте издательство\n";
     public static final String INPUT_DATE_OF_PUBLICATION = "Пожалуйста, " +
-            "задайте дату издания в формате yyyy mm dd\n";
+            "задайте дату издания в формате yyyy mm dd";
     public static final String INPUT_NUMBER_OF_PAGES = "Пожалуйста, " +
             "задайте количество страниц\n";
     public static final String INPUT_ID = """
@@ -62,7 +62,7 @@ public final class Constants {
             """;
     public static final String INPUT_REQUEST = "Пожалуйста, введите запрос для поиска\n";
     public static final String CANCELLATION_OPERATION = "или введите 0 " +
-            "для возврата в главное меню";
+            "для возврата в главное меню\n";
 
     private Constants() {
     }
